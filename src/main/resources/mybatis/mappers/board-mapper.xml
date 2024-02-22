@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="board">
+	
+	<resultMap type="commentDTO" id="commentDTOmap">
+		<result column="cno" property="no"/>
+		<result column="board_no" property="board_no"/>
+		<result column="ccomment" property="comment"/>
+		<result column="cdate" property="cdate"/>
+		<result column="clike" property="clike"/>
+		<result column="mno" property="mno"/>
+		<result column="mid" property="mid"/>
+		<result column="mname" property="mname"/>
+		<result column="cip" property="cip"/>
+	</resultMap>
+
+	<select id="totalRecordCount" resultType="Integer">
+		<![CDATA[
+			SELECT COUNT(*) FROM boardview
+		]]>
+	</select>
+	
+	<select id="boardList" resultType="boardDTO" parameterType="Integer">
+		SELECT board_no, board_title, board_write AS mname, board_date, board_count, comment 
+		FROM boardview LIMIT #{pageNo}, 10
+	</select>
+	
+	<select id="detail" resultType="boardDTO" parameterType="Integer">
+		SELECT b.board_no, b.board_title, b.board_content, b.board_date, b.board_ip, b.board_del, 
+		m.mname, m.mid, m.mpfpic, 
+		(SELECT COUNT(*) FROM visitcount v WHERE v.board_no=b.board_no) AS board_count, 
+		(SELECT COUNT(*) FROM comment c WHERE c.board_no=b.board_no AND c.cdel='1') AS comment 
+		FROM board b JOIN member m ON b.mno=m.mno 
+		WHERE b.board_no=#{no} AND b.board_del='1'
+	</select>
+	
+	<insert id="write" parameterType="writeDTO">
+		INSERT INTO board (board_title, board_content, mno, board_ip) 
+		VALUES (#{title}, #{content}, (SELECT mno FROM member WHERE mid=#{mid}), #{ip});
+		<selectKey resultType="Integer" keyProperty="board_no" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	
+	<insert id="commentWrite" parameterType="commentDTO">
+		INSERT INTO comment (board_no, ccomment, mno, cip)
+		VALUES (#{no}, #{comment}, (SELECT mno FROM member WHERE mid=#{mid}), #{cip})
+	</insert>
+	
+	<select id="commentList" resultMap="commentDTOmap" parameterType="Integer">
+		SELECT cno, ccomment, cdate, clike, mid, mname, cip, profile 
+		FROM commentview 
+		WHERE board_no=#{no}
+	</select>
+	
+	<update id="deletePost" parameterType="writeDTO">
+		<![CDATA[
+			UPDATE board SET board_del='0' 
+			WHERE board_no=#{board_no} AND mno=(SELECT mno FROM member WHERE mid=#{mid})
+		]]>
+	</update>
+	
+	<update id="deleteComment" parameterType="commentDTO">
+		UPDATE comment SET cdel='0' 
+		WHERE cno=#{no} AND board_no=#{board_no} AND mno=(SELECT mno FROM member WHERE mid=#{mid})
+	</update>
+	
+	<insert id="viewCount" parameterType="boardDTO">
+		<selectKey keyProperty="board_count" resultType="Integer" order="BEFORE">
+			SELECT COUNT(*) 
+			FROM visitcount 
+			WHERE board_no=#{board_no} AND mno=(SELECT mno FROM member WHERE mid=#{mid})
+		</selectKey>
+		<if test="board_count == 0">
+			INSERT INTO visitcount (board_no, mno) 
+			VALUES (#{board_no}, (SELECT mno FROM member WHERE mid=#{mid}))
+		</if>
+		<if test="board_count != 0">
+			SELECT COUNT(*) FROM dual
+		</if>
+	</insert>
+	
+	<select id="viewCheck" parameterType="boardDTO" resultType="Integer">
+		SELECT COUNT(*) 
+		FROM visitcount 
+		WHERE board_no=#{board_no} AND mno=(SELECT mno FROM member WHERE mid=#{mid})
+	</select>
+	
+	<update id="clikeUp" parameterType="commentDTO">
+		UPDATE comment SET clike=clike+1 WHERE cno=#{no} AND board_no=#{board_no}
+	</update>
+	
+	<update id="likeUp" parameterType="commentDTO">
+		UPDATE comment SET clike=clike+1 WHERE cno=#{no} AND board_no=#{board_no}
+	</update>
+	
+	<select id="clikeReturn" parameterType="commentDTO" resultType="Integer">
+		SELECT clike FROM comment WHERE cno=#{no} AND board_no=#{board_no}
+	</select>
+	
+</mapper>

@@ -1,0 +1,21 @@
+@charset "UTF-8";
+.title {
+	text-align: left;
+}
+.title > a {
+	color: black;
+	text-decoration: none;
+}
+.title > a:hover {
+	color: var(--bs-link-color);
+}
+.badge {
+	background-color: var(--bs-link-color);
+}
+.vh-500 {
+	height: 500px;
+}
+/* .comment-btn-wrapper {
+	display: flex;
+	justify-content: flex-end;
+} */

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	
+	<typeAliases>
+		<typeAlias type="org.apple.dto.BoardDTO" alias="boardDTO"/>
+		<typeAlias type="org.apple.dto.WriteDTO" alias="writeDTO"/>
+		<typeAlias type="org.apple.dto.CommentDTO" alias="commentDTO"/>
+		<typeAlias type="org.apple.dto.LoginDTO" alias="loginDTO"/>
+		<typeAlias type="org.apple.dto.MemberDTO" alias="memberDTO"/>
+		<typeAlias type="org.apple.dto.MyDTO" alias="myDTO"/>
+	</typeAliases>
+	
+</configuration>

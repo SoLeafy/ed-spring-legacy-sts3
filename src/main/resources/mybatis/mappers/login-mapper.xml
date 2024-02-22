@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="login">
+	
+	<select id="login" parameterType="loginDTO" resultType="loginDTO">
+		<![CDATA[
+		SELECT COUNT(*) AS count, mname, mcount, mpw AS pw 
+		FROM member 
+		WHERE mid=#{id} AND mgrade > 4
+		]]>
+	</select>
+	
+	<update id="mcountUp" parameterType="loginDTO">
+		UPDATE member SET mcount=mcount+1 
+		WHERE mid=#{id}
+	</update>
+	
+	<update id="mcountReset" parameterType="loginDTO">
+		UPDATE member SET mcount=1 
+		WHERE mid=#{id}
+	</update>
+	
+	<select id="getEmail" parameterType="String" resultType="String">
+		SELECT memail FROM member WHERE mid=#{id}
+	</select>
+</mapper>
