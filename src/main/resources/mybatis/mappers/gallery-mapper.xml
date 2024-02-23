@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="gallery">
+	
+	<insert id="galleryInsert" parameterType="galleryDTO">
+		INSERT INTO gallery (gtitle, gcontent, gfile, mno) 
+		VALUES (#{gtitle}, #{gcontent}, #{gfile}, (SELECT mno FROM member WHERE mid=#{mid}))
+	</insert>
+	
+	<select id="galleryList" resultType="galleryDTO">
+		SELECT * 
+		FROM gallery
+	</select>
+	
+</mapper>

@@ -1,15 +1,24 @@
 package org.apple.util;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Random;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+
+import net.coobird.thumbnailator.Thumbnailator;
 
 // controller, service, repository 이외의 기능 = component
 // 얘 역시 autowired로 쓴다.
@@ -116,6 +125,42 @@ public class Util {
 		random.setSeed(System.currentTimeMillis()); //컴퓨터가 뽑는 숫자들이 진짜 랜덤하지 않고 비슷비슷해서.. 진짜 랜덤하도록(?)
 		String key = random.nextInt(10) + "" + random.nextInt(10) + random.nextInt(10) + random.nextInt(10);
 		return key;
+	}
+	
+	public String createUUID() {
+		//UUID 생성
+		UUID uuid = UUID.randomUUID();
+		return uuid.toString();
+	}
+	
+	// 조금 더 센스있다면 UUID 뽑는 것도 다른 util로 뺐을 것
+	public String fileUpload(MultipartFile upFile) {
+		//경로 저장
+		//root는 사실 필요없지만 아까 했으니까
+		String root = getSession().getServletContext().getRealPath("/"); //리눅스, 유닉스 서버는 c:/가 아님. 최상위는 /
+		String upfilePath = root + "resources\\upfile\\";
+		
+		//UUID를 포함한 파일명
+		String newFileName = createUUID() + upFile.getOriginalFilename();
+		
+		//실제 업로드
+		File file = new File(upfilePath, newFileName); //파일경로, 파일이름
+		if(file.exists() == false) {
+			file.mkdirs();//경로가 없다면 다 만들어주기. (mkdir()이라 했으면 하나만 만들어줌.)
+		}
+		
+		try {
+			//썸네일 만들기
+			FileOutputStream thumbnail = new FileOutputStream(new File(upfilePath, "s_" + newFileName)); //thumbnail path 따로 쓰면 따로 저장되겠네
+			Thumbnailator.createThumbnail(upFile.getInputStream(), thumbnail, 100, 100); //실제파일 inputstream으로 만들기, 썸네일 경로, 썸네일 사이즈
+			thumbnail.close();
+			
+			upFile.transferTo(file); //자바 밖으로 가서 파일을 저장해온다.
+		} catch (IllegalStateException | IOException e) { //멀티캐치
+			e.printStackTrace();
+		}
+		
+		return newFileName;
 	}
 	
 }

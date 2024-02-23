@@ -9,6 +9,9 @@
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
                         <li class="nav-item"><a class="nav-link" href="./board">board</a></li>
+                        <li class="nav-item"><a class="nav-link" href="./gallery">gallery</a></li>
+                        <li class="nav-item"><a class="nav-link" href="./file">file</a></li>
+                        <li class="nav-item"><a class="nav-link" href="./mail">mail</a></li>
                         <li class="nav-item"><a class="nav-link" href="./notice">notice</a></li><c:choose><c:when test="${sessionScope.mname ne null }">
                         <li class="nav-item"><a class="nav-link" href="myInfo@${sessionScope.mid }">Hello, ${sessionScope.mname }!</a></li>
                         <li class="nav-item"><a class="nav-link" href="./logout">logout</a></li></c:when><c:otherwise>
