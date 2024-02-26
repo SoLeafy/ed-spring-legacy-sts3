@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class GalleryDTO {
 	
-	private int gno, glike, gdel;
-	private String gtitle, gcontent, gfile, gdate, mname, mid;
+	private int gno, glike, gdel, mno;
+	private String gtitle, gcontent, gfile, gdate, mname, mid, mpfpic;
 	
 }

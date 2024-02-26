@@ -12,6 +12,7 @@
 		<typeAlias type="org.apple.dto.LoginDTO" alias="loginDTO"/>
 		<typeAlias type="org.apple.dto.MemberDTO" alias="memberDTO"/>
 		<typeAlias type="org.apple.dto.GalleryDTO" alias="galleryDTO"/>
+		<typeAlias type="org.apple.dto.NoticeDTO" alias="noticeDTO"/>
 		<typeAlias type="org.apple.dto.MyDTO" alias="myDTO"/>
 	</typeAliases>
 	

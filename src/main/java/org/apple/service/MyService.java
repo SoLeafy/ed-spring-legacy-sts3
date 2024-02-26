@@ -9,12 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MyService {
+public class MyService extends AbstractService {
 
 	@Autowired
 	private MyDAO myDAO;
-	@Autowired
-	private Util util;
 	
 	public int updateProfile(MyDTO dto) {
 		return myDAO.updateProfile(dto);

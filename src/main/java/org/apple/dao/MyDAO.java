@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class MyDAO {
-
-	@Autowired
-	private SqlSession sqlSession;
+public class MyDAO extends AbstractDAO {
 	
 	public int updateProfile(MyDTO dto) {
 		return sqlSession.update("member.updateProfile", dto);

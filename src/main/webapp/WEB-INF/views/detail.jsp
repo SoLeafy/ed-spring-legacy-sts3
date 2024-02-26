@@ -134,6 +134,38 @@
 			
 			//jquery start
 			$(function(){
+				$(".likeBtn").click(function() {
+					let cno = $(this).next().val();
+					let target = $(this).next().next();
+					Swal.fire({
+				        title: "좋아요를 누르시겠습니까?",
+				        icon: "question",
+				        showCancelButton: true,
+				        confirmButtonColor: "#255f85",
+				        cancelButtonColor: "#e9724c",
+				        confirmButtonText: "확인",
+				        cancelButtonText: "취소",
+				    }).then((result) => {
+				        if (result.isConfirmed) {
+				            // 확인 버튼을 클릭한 경우에만 페이지 이동
+				            //location.href = "./likeUp?no=${detail.board_no}&cno=" + cno;
+							$.ajax({
+								url: "./clikeUp", 
+								type: "post", 
+								dataType: "text", 
+								data: {no: ${detail.board_no}, cno: cno},
+								success: function(data) {
+									//console.log(data);
+									target.html(data);
+								},
+								error: function(error) {
+									alert("통신 실패: " + error);
+								}
+							});
+				        }
+				    });
+				})
+				
 				let profile = $('${detail.mpfpic }');
 				$("#profilePic").html(profile);
 				
@@ -236,7 +268,9 @@
 			        			<div class="col-2"><img alt="ip" src="./img/ip.png"><span class="mx-1">${c.cip }</span></div>
 			        			<div class="col-2"><img alt="time" src="./img/time.png"><span class="mx-1">${c.cdate }</span></div>
 			        			<div class="col-1">
-			        			<img alt="like" src="./img/like.png" class="imgBtn" onclick="like(${c.no })">
+			        			<img alt="like" src="./img/like.png" class="imgBtn likeBtn">
+<%-- 			        			<img alt="like" src="./img/like.png" class="imgBtn" onclick="like(${c.no })"> --%>
+								<input type="hidden" value=${c.no }>
 			        			<span class="clike">${c.clike }</span>
 			        			</div>
 		        			</div>
