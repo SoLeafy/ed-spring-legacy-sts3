@@ -29,20 +29,7 @@
 	<script type="text/javascript">
 	
 		function postDel(no, del) {
-			location.href="./postDel?no="+no+"&del="+del; //get으로 바꾸기...
-			/* $.ajax({
-				url: "./postDel",
-				type: "post",
-				dataType: "json",
-				data: {board_no: no, board_del: del},
-				success: function(data) {
-					alert("통신 결과: " + data);
-					
-				},
-				error: function(error) {
-					alert("통신 실패: " + error);
-				}
-			}); */
+			location.href="./postDel?no="+no+"&del="+del;
 		}
 		
 		function linkPage(page) {
@@ -58,6 +45,34 @@
 			$("#reset").click(function(){
 				location.href="./board"; // ./board?page=1&perPage=1 과 같다
 			})
+			$(".delControl").click(function(){
+				let btn = $(this);
+				let tr = $(this).parents('tr');
+				let no = tr.children().first().text();
+				let del = btn.next();
+				//alert("no: " + no + " / del: " + del);
+				$.ajax({
+					url: "./postDel",
+					type: "post",
+					dataType: "json",
+					data: {board_no: no, board_del: del.val()},
+					success: function(data) {
+						//alert("통신 결과: " + data.del);
+						if(data.del === 1) {
+							tr.removeClass("bg-dark");
+							del.val(1);
+							btn.attr("class", "fa fa-genderless delControl");
+						} else {
+							tr.addClass("bg-dark");
+							del.val(0);
+							btn.attr("class", "fa fa-times delControl");
+						}
+					},
+					error: function(error) {
+						alert("통신 실패: " + error);
+					}
+				});
+			});
 		});
 	</script>
 </head>
@@ -157,13 +172,16 @@
                                             <td>
                                             <c:choose>
                                             	<c:when test="${row.board_del eq 1 }">
-		                                            <i class="fa fa-genderless delControl" aria-hidden="true" onclick="postDel(${row.board_no}, ${row.board_del })"></i>
+		                                            <%-- <i class="fa fa-genderless" aria-hidden="true" onclick="postDel(${row.board_no}, ${row.board_del })"></i> --%>
+		                                            <i class="fa fa-genderless delControl" aria-hidden="true"></i>
                                             	</c:when>
                                             	<c:otherwise>
-		                                            <i class="fa fa-times delControl" aria-hidden="true" onclick="postDel(${row.board_no}, ${row.board_del })"></i>
+		                                            <%-- <i class="fa fa-times" aria-hidden="true" onclick="postDel(${row.board_no}, ${row.board_del })"></i> --%>
+		                                            <i class="fa fa-times delControl" aria-hidden="true"></i>
                                             	</c:otherwise>
                                             </c:choose>
-                                            ${row.board_del }</td>
+                                            <input type="hidden" value="${row.board_del }">
+                                            </td>
                                         </tr>
                                     </c:forEach>
                                     </tbody>
