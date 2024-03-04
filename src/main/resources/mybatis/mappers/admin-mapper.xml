@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="admin">
+	
+	<select id="totalRecordCount" resultType="int" parameterType="searchDTO">
+		SELECT COUNT(0) 
+		FROM board b JOIN member m ON b.mno=m.mno 
+		<where>
+			<if test="searchOption == 1">
+				b.board_title LIKE CONCAT('%', #{search}, '%') 
+			</if>
+			<if test="searchOption == 2">
+				b.board_content LIKE CONCAT('%', #{search}, '%') 
+			</if>
+			<if test="searchOption == 3">
+				m.mname LIKE CONCAT('%', #{search}, '%') 
+			</if>
+		</where>
+	</select>
+	
+	<select id="boardList" parameterType="searchDTO" resultType="boardDTO">
+		SELECT b.board_no, b.mno, b.board_del, m.mname, 
+		(select count(0) from `visitcount` where `visitcount`.`board_no` = `b`.`board_no`) AS board_count, 
+		board_title, board_date, board_ip, 
+		(select count(0) from `comment` where `comment`.`board_no` = `b`.`board_no`) AS `comment` 
+		FROM board b JOIN member m ON b.mno=m.mno 
+		<where>
+			<if test="searchOption == 1">
+				b.board_title LIKE CONCAT('%', #{search}, '%') 
+			</if>
+			<if test="searchOption == 2">
+				b.board_content LIKE CONCAT('%', #{search}, '%') 
+			</if>
+			<if test="searchOption == 3">
+				m.mname LIKE CONCAT('%', #{search}, '%') 
+			</if>
+		</where>
+		ORDER BY b.board_no DESC 
+		LIMIT #{pageNo}, #{recordCountPerPage}
+	</select>
+	
+	<update id="postDel" parameterType="boardDTO">
+		<choose>
+		<when test="board_del == 1">
+			UPDATE board SET board_del="0" 
+		</when>
+		<otherwise>
+			UPDATE board SET board_del="1" 
+		</otherwise>
+		</choose>
+	    WHERE board_no=#{board_no}
+	</update>
+	
+	<select id="findDel" parameterType="int" resultType="int">
+		SELECT board_del FROM board WHERE board_no=#{no}
+	</select>
+	
+	<select id="totalMemberCount" parameterType="searchDTO" resultType="int">
+		SELECT COUNT(0) FROM member 
+		<where>
+			<if test="search != null">
+				m.mname LIKE CONCAT('%', #{search}, '%')
+			</if>
+		</where>
+	</select>
+	
+	<select id="memberList" parameterType="searchDTO" resultType="memberDTO">
+		SELECT * FROM member
+	</select>
+	
+	
+</mapper>

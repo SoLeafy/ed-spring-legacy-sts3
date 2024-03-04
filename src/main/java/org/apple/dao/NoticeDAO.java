@@ -8,8 +8,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class NoticeDAO extends AbstractDAO {
 	
-	public List<NoticeDTO> noticeList() {
-		return sqlSession.selectList("notice.noticeList");
+	public List<NoticeDTO> noticeList(int page) {
+		return sqlSession.selectList("notice.noticeList", page);
 	}
 
 	public NoticeDTO noticeDetail(int no) {
@@ -26,5 +26,9 @@ public class NoticeDAO extends AbstractDAO {
 
 	public int noticeDel(NoticeDTO dto) {
 		return sqlSession.update("notice.noticeDel", dto);
+	}
+
+	public int totalRecordCount() {
+		return sqlSession.selectOne("notice.totalRecordCount");
 	}
 }

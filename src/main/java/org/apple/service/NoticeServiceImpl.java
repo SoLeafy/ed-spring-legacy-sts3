@@ -14,17 +14,20 @@ public class NoticeServiceImpl extends AbstractService implements NoticeService 
 	private NoticeDAO noticeDAO;
 
 	@Override
-	public List<NoticeDTO> noticeList() {
-		return noticeDAO.noticeList();
+	public List<NoticeDTO> noticeList(int page) {
+		return noticeDAO.noticeList(page);
 	}
 
 	@Override
-	public NoticeDTO noticeDetail(int no) {
-		return noticeDAO.noticeDetail(no);
+	public NoticeDTO noticeDetail(String no) {
+		int reNo = util.str2Int(no);
+		return noticeDAO.noticeDetail(reNo);
 	}
 
 	@Override
 	public int noticeWrite(NoticeDTO dto) {
+		dto.setMid(String.valueOf(util.getSession().getAttribute("mid")));
+		dto.setNip(util.getIp());
 		return noticeDAO.noticeWrite(dto);
 	}
 
@@ -34,8 +37,16 @@ public class NoticeServiceImpl extends AbstractService implements NoticeService 
 	}
 
 	@Override
-	public int noticeDel(NoticeDTO dto) {
+	public int noticeDel(int no) {
+		NoticeDTO dto = new NoticeDTO();
+		dto.setNno(no);
+		dto.setMid(String.valueOf(util.getSession().getAttribute("mid")));
 		return noticeDAO.noticeDel(dto);
+	}
+
+	@Override
+	public int totalRecordCount() {
+		return noticeDAO.totalRecordCount();
 	}
 	
 }

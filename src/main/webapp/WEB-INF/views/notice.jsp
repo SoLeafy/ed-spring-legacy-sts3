@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui" %>
 <!DOCTYPE html>
 <html lang="ko">
@@ -58,6 +60,9 @@
         .pagingArea > a {
         	color: black;
         }
+        .title:hover {
+        	cursor: pointer;
+        }
         </style>
         <script type="text/javascript">
         	function writeCheck() {
@@ -115,8 +120,12 @@
         		detailModal.show();
         	}
         	
-        	function linkPage(pageNo){
-        		location.href = "./notice?pageNo="+pageNo;
+        	function linkPage(page){
+        		location.href = "./notice?page="+page;
+        	}
+        	
+        	function linkDetail(no){
+        		location.href="./noticeDetail?no=" + no;
         	}
         </script>
     </head>
@@ -132,42 +141,53 @@
                     <h2 class="section-heading text-uppercase">Notice</h2>
                 </div>
                 <div class="row text-center">
-                    <table class="table table-hover">
-						<thead>
-							<tr>
-								<th>no</th>
-								<th>title</th>
-								<th>author</th>
-								<th>date</th>
-								<th>views</th>
-							</tr>
-						</thead>
-						<tbody>
-							<%-- <c:forEach items="${list }" var="row">
-								<tr>
-									<td class="board-no" onclick="detail(${row.board_no})">${row.board_no }</td> <!-- 요즘 글번호 빼는 추세 -->
-									<td class="title"> <!-- 글번호 형제요소 text 가져오게 해도됨 -->
-									<a href="./detail?no=${row.board_no }">
-									${row.board_title } 
-									<c:if test="${row.comment ne 0 }">
-										<span class="badge">${row.comment }</span>
-									</c:if>
-									</a>
-									</td>
-									<td>${row.mname }</td>
-									<td>${row.board_date }</td>
-									<td>${row.board_count }</td>
-								</tr>
-							</c:forEach> --%>
-						</tbody>
-					</table>
-					<!-- 페이징 -->
-					<%-- <div class="m-2 pagingArea">
-						<ui:pagination paginationInfo="${paginationInfo}" type="image" jsFunction="linkPage"/>
-					</div> --%>
+                	<%-- ${fn:length(list) }개의 공지사항이 있습니다.<br> --%>
+                	${totalRecordCount }개의 공지사항이 있습니다.<br>
+                	<c:choose>
+                		<c:when test="${fn:length(list) gt 0 }">
+		                    <table class="table table-hover">
+								<thead>
+									<tr>
+										<th>no</th>
+										<th>title</th>
+										<th>author</th>
+										<th>date</th>
+										<th>views</th>
+									</tr>
+								</thead>
+								<tbody>
+									<c:forEach items="${list }" var="row">
+									<c:set var="now" value="<%=new java.util.Date()%>" /><!-- 현재시간 -->
+									<fmt:parseNumber value="${now.time / (1000*60*60*24)}" integerOnly="true" var="today" /><!-- 현재시간을 숫자로 -->
+									<fmt:parseNumber value="${row.ndate.time / (1000*60*60*24)}" integerOnly="true" var="nPostDate" /><!-- 게시글 작성날짜를 숫자로 -->
+										<tr>
+											<td class="board-no">${row.nno }</td> <!-- 요즘 글번호 빼는 추세 -->
+											<td class="title" onclick="linkDetail(${row.nno })"> <!-- 글번호 형제요소 text 가져오게 해도됨 -->
+											${row.ntitle } <c:if test="${today - nPostDate le 1 }"><span class="badge">N</span></c:if>
+											</td>
+											<td>${row.mname }(관리자)</td>
+											<td>${row.ndate }</td>
+											<td>${row.nread }</td>
+										</tr>
+									</c:forEach>
+								</tbody>
+							</table>
+							<!-- 페이징 -->
+							<div class="m-2 pagingArea">
+								<ui:pagination paginationInfo="${paginationInfo}" type="image" jsFunction="linkPage"/>
+							</div>
+                		</c:when>
+                		<c:otherwise>
+                			<h1>출력할 데이터가 없습니다.</h1>
+                		</c:otherwise>
+                	</c:choose>
 					<!-- 글쓰기 버튼 -->
 					<c:if test="${sessionScope.mid ne null }">
 					<button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#write">write</button>
+					<!-- 공지 작성 페이지 버튼 -->
+					<c:if test="${sessionScope.mgrade gt 5 }">
+					<button onclick="location.href='./admin/noticeWrite'" class="btn btn-light">공지 작성하러 가기</button>
+					</c:if>
 					</c:if>
                 </div>
             </div>
@@ -183,10 +203,10 @@
         			</div>
         			<div class="modal-body">
         				<div class="mt-2">
-	        				<form action="./write" method="post" onsubmit="return writeCheck()" name="frm">
+	        				<form action="./noticeWrite" method="post" onsubmit="return writeCheck()" name="frm">
 	        					<div class="write-form-wrapper">
-	        					<input type="text" name="title" id="title" class="form-control mb-2" required="required" placeholder="title...">
-	        					<textarea name="content" id="summernote" class="form-control mb-2 vh-500" required="required"></textarea>
+	        					<input type="text" name="ntitle" id="title" class="form-control mb-2" required="required" placeholder="title...">
+	        					<textarea name="ncontent" id="summernote" class="form-control mb-2 vh-500" required="required"></textarea>
 	        					<div class="submit-btn-wrapper">
 	        					<button type="submit" class="btn btn-light">submit</button>
 	        					</div>

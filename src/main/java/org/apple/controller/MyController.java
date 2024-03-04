@@ -23,7 +23,11 @@ public class MyController {
 	
 	@GetMapping("/profile")
 	public String profile() {
-		return "profile";
+		if(util.getSession().getAttribute("mid") != null) {
+			return "profile";
+		} else {
+			return "redirect:/login";
+		}
 	}
 	
 	@PostMapping("/getProfile")

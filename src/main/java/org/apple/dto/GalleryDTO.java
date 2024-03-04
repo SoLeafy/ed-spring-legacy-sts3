@@ -8,6 +8,6 @@ import lombok.Setter;
 public class GalleryDTO {
 	
 	private int gno, glike, gdel, mno;
-	private String gtitle, gcontent, gfile, gdate, mname, mid, mpfpic;
+	private String gtitle, gcontent, gfile, gdate, mname, mid, mpfpic, gip;
 	
 }

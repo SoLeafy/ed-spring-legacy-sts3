@@ -6,10 +6,11 @@ import org.apple.dto.NoticeDTO;
 
 public interface NoticeService {
 
-	public List<NoticeDTO> noticeList();
-	public NoticeDTO noticeDetail(int no);
+	public List<NoticeDTO> noticeList(int i);
+	public NoticeDTO noticeDetail(String no);
 	public int noticeWrite(NoticeDTO dto);
 	public int noticeUpdate(NoticeDTO dto);
-	public int noticeDel(NoticeDTO dto);
+	public int noticeDel(int no);
+	public int totalRecordCount();
 	
 }

@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apple.dto.BoardDTO;
 import org.apple.dto.CommentDTO;
+import org.apple.dto.SearchDTO;
 import org.apple.dto.WriteDTO;
 import org.apple.service.BoardService;
 import org.apple.util.Util;
@@ -40,7 +41,13 @@ public class BoardController {
 	
 	//페이징 추가하기 2024-02-20 psd
 	@GetMapping("/board")
-	public String board(@RequestParam(value = "pageNo", required = false) String no, HttpServletRequest request, Model model) {
+	public String board(
+			@RequestParam(value = "pageNo", required = false) String no, 
+			@RequestParam(value="search", required=false) String search, 
+			Model model) {
+		
+		//System.out.println("검색어: " + search);
+		
 		//pageNo가 오지 않는다면
 		int currentPageNo = 1;
 		if(util.str2Int(no) > 0) { //운영하다보면 여기 수정해야함. 정수..?
@@ -48,7 +55,7 @@ public class BoardController {
 		}
 		
 		//int totalRecordCount 전체 글 수
-		int totalRecordCount = boardService.totalRecordCount();
+		int totalRecordCount = boardService.totalRecordCount(search); // 검색 건수에 대한 페이징을 해야해서
 		System.out.println("총 게시글 수 : " + totalRecordCount);
 		//pagination
 		PaginationInfo paginationInfo = new PaginationInfo();
@@ -57,12 +64,16 @@ public class BoardController {
 		paginationInfo.setPageSize(10); // 페이징 리스트의 사이즈
 		paginationInfo.setTotalRecordCount(totalRecordCount); //전체 게시물 건수
 		
-		List<BoardDTO> list = boardService.boardList(paginationInfo.getFirstRecordIndex());//DTO -> 전통적인 방법으로 해야해서
+		SearchDTO searchDTO = new SearchDTO();
+		searchDTO.setPageNo(paginationInfo.getFirstRecordIndex()); // paginationInfo가 계산해서 준 값.
+		searchDTO.setSearch(search);
+		
+		List<BoardDTO> list = boardService.boardList(searchDTO);
 		model.addAttribute("list", list);
 		//페이징 관련 정보가 있는 PaginationInfo 객체를 모델에 반드시 넣어준다.
 		model.addAttribute("paginationInfo", paginationInfo);
 		model.addAttribute("pageNo", currentPageNo);
-		System.out.println("보드 아이피: " + request.getRemoteAddr());
+		model.addAttribute("search", search);
 		return "board";
 	}
 	//2024-02-16 웹표준 기술 psd

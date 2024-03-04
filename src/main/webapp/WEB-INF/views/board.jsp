@@ -116,7 +116,8 @@
         	}
         	
         	function linkPage(pageNo){
-        		location.href = "./board?pageNo="+pageNo;
+        		location.href = "./board?search=${search}&pageNo="+pageNo;
+        		//location.href = "./board?search=${param.search}&pageNo="+pageNo; //${param.search}쓰면 controller에서 search를 따로 model로 안 내보내도 된다.
         	}
         </script>
     </head>
@@ -161,6 +162,18 @@
 							</c:forEach>
 						</tbody>
 					</table>
+					<!-- 검색 -->
+					<div class="m-2 bg-warning">
+						<div>
+							<form action="./board">
+							<div class="input-group">
+								<input type="text" name="search" class="form-control">
+								<input type="hidden" name="pageNo" value="${pageNo }" class="form-control">
+								<button type="submit" class="btn btn-light">search</button>
+							</div>
+							</form>
+						</div>
+					</div>
 					<!-- 페이징 -->
 					<div class="m-2 pagingArea">
 						<ui:pagination paginationInfo="${paginationInfo}" type="image" jsFunction="linkPage"/>

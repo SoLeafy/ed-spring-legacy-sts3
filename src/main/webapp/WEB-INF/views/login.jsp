@@ -40,7 +40,7 @@
         <script type="text/javascript">
         $(function(){
         	$("#loginBtn").click(function() {
-        		let id = 
+        		//let id = 
         	});
         });
         </script>

@@ -139,7 +139,7 @@
 	                		<img class="imgBtn mx-1" alt="delete" src="./img/delete_heart.png" title="글삭제" onclick="deleteGallery(${detail.gno})">
 	                		</c:if>
 	                		</div>
-	                		<div class="col align-middle text-end detailLineEnd">${detail.gdate }
+	                		<div class="col align-middle text-end detailLineEnd">${detail.gdate } / ${detail.gip }
 	                		<span>
 	                		<img alt="갤러리좋아요" src="/img/likes.png">
 	                		${detail.glike }

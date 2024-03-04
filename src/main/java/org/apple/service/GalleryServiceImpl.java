@@ -19,6 +19,7 @@ public class GalleryServiceImpl extends AbstractService implements GalleryServic
 		//세션 추가
 		if(util.getSession().getAttribute("mid") != null) {
 			dto.setMid(String.valueOf(util.getSession().getAttribute("mid")));
+			dto.setGip(util.getIp());
 			return galleryDAO.galleryInsert(dto);
 		} else {
 			return 0;

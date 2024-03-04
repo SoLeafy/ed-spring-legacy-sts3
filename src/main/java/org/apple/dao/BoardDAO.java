@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.session.SqlSession;
 import org.apple.dto.BoardDTO;
 import org.apple.dto.CommentDTO;
+import org.apple.dto.SearchDTO;
 import org.apple.dto.WriteDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -36,8 +37,12 @@ public class BoardDAO extends AbstractDAO {
 		return sqlSession.update("board.deletePost", dto);
 	}
 
+	public int totalRecordCount(String search) {
+		return sqlSession.selectOne("board.totalRecordCount", search);
+	}
+	
 	public int totalRecordCount() {
-		return sqlSession.selectOne("board.totalRecordCount");
+		return sqlSession.selectOne("board.totalRecordCount2");
 	}
 
 	public int deleteComment(CommentDTO dto) {
@@ -63,6 +68,10 @@ public class BoardDAO extends AbstractDAO {
 	public int clikeReturn(CommentDTO dto) {
 		int result = sqlSession.selectOne("board.clikeReturn", dto);
 		return result;
+	}
+
+	public List<BoardDTO> boardList(SearchDTO dto) {
+		return sqlSession.selectList("board.boardListSearch", dto);
 	}
 
 }

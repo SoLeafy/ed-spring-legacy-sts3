@@ -94,8 +94,8 @@
 		            	<div class="card-title">
 		            		<div class="d-flex justify-content-center">${row.gtitle }</div>
 		            	</div>
-		            		<div class="card-body" style="height: 120px;">
-		            			<img class="imgLink" alt="" src="./upfile/s_${row.gfile }" onclick="galleryDetail(${row.gno })">
+		            		<div class="card-body imgLink" style="height: 120px;" onclick="galleryDetail(${row.gno })">
+		            			<img alt="" src="./upfile/s_${row.gfile }">
 		            		</div>
 		            		<div class="card-group row">
 		            			<div class="card-group-item col">

@@ -12,4 +12,8 @@
 	<update id="setKey" parameterType="memberDTO">
 		UPDATE member SET mkey=#{mkey} WHERE memail=#{memail} AND mid=#{mid}
 	</update>
+	
+	<select id="idCheck" parameterType="String" resultType="int">
+		SELECT COUNT(0) FROM member WHERE mid=#{id}
+	</select>
 </mapper>

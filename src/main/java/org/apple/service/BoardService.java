@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 import org.apple.dao.BoardDAO;
 import org.apple.dto.BoardDTO;
 import org.apple.dto.CommentDTO;
+import org.apple.dto.SearchDTO;
 import org.apple.dto.WriteDTO;
 import org.apple.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +73,10 @@ public class BoardService extends AbstractService {
 		return boardDAO.postDel(dto);
 	}
 
+	public int totalRecordCount(String search) {
+		return boardDAO.totalRecordCount(search);
+	}
+	
 	public int totalRecordCount() {
 		return boardDAO.totalRecordCount();
 	}
@@ -95,6 +100,10 @@ public class BoardService extends AbstractService {
 
 	public int clikeReturn(CommentDTO dto) {
 		return boardDAO.clikeReturn(dto);
+	}
+
+	public List<BoardDTO> boardList(SearchDTO dto) {
+		return boardDAO.boardList(dto);
 	}
 
 

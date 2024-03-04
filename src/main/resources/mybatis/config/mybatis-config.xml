@@ -13,6 +13,7 @@
 		<typeAlias type="org.apple.dto.MemberDTO" alias="memberDTO"/>
 		<typeAlias type="org.apple.dto.GalleryDTO" alias="galleryDTO"/>
 		<typeAlias type="org.apple.dto.NoticeDTO" alias="noticeDTO"/>
+		<typeAlias type="org.apple.dto.SearchDTO" alias="searchDTO"/>
 		<typeAlias type="org.apple.dto.MyDTO" alias="myDTO"/>
 	</typeAliases>
 	

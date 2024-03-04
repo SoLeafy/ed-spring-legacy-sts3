@@ -93,7 +93,7 @@ $(function(){
 	
 	$("#sendProfile").click(function(){
 		let holdingPf = $(pfHolder.html());
-		holdingPf = holdingPf.removeAttr('style').attr("class", "profilePic");
+		holdingPf = holdingPf.removeAttr('style').attr("class", "profilePic").attr("alt", "프로필사진");
 		console.log(holdingPf[0]);
 		let pfString = holdingPf[0].outerHTML;
 		$.ajax({
