@@ -37,4 +37,8 @@ public class AdminDAO {
 	public int findDel(int no) {
 		return sqlSession.selectOne("admin.findDel", no);
 	}
+
+	public BoardDTO adminDetail(int no) {
+		return sqlSession.selectOne("admin.detail", no);
+	}
 }

@@ -18,13 +18,19 @@
 			<if test="searchOption == 3">
 				m.mname LIKE CONCAT('%', #{search}, '%') 
 			</if>
+			<if test="searchOption == 4">
+				b.board_ip = #{search}
+			</if>
 		</where>
 	</select>
 	
 	<select id="boardList" parameterType="searchDTO" resultType="boardDTO">
 		SELECT b.board_no, b.mno, b.board_del, m.mname, 
 		(select count(0) from `visitcount` where `visitcount`.`board_no` = `b`.`board_no`) AS board_count, 
-		board_title, board_date, board_ip, 
+		board_title, board_ip, 
+		if(date_format(current_timestamp(),'%Y-%m-%d') = date_format(`b`.`board_date`,'%Y-%m-%d'),
+			date_format(`b`.`board_date`,'%h:%i'), 
+			date_format(`b`.`board_date`,'%m-%d')) AS board_date, 
 		(select count(0) from `comment` where `comment`.`board_no` = `b`.`board_no`) AS `comment` 
 		FROM board b JOIN member m ON b.mno=m.mno 
 		<where>
@@ -36,6 +42,9 @@
 			</if>
 			<if test="searchOption == 3">
 				m.mname LIKE CONCAT('%', #{search}, '%') 
+			</if>
+			<if test="searchOption == 4">
+				b.board_ip = #{search}
 			</if>
 		</where>
 		ORDER BY b.board_no DESC 
@@ -69,6 +78,17 @@
 	
 	<select id="memberList" parameterType="searchDTO" resultType="memberDTO">
 		SELECT * FROM member
+	</select>
+	
+	<select id="detail" parameterType="int" resultType="boardDTO">
+		SELECT b.board_no, b.mno, b.board_del, m.mname, b.board_content, m.mpfpic, 
+		(select count(0) from `visitcount` where `visitcount`.`board_no` = `b`.`board_no`) AS board_count, 
+		board_title, board_ip, 
+		if(date_format(current_timestamp(),'%Y-%m-%d') = date_format(`b`.`board_date`,'%Y-%m-%d'),
+			date_format(`b`.`board_date`,'%h:%i'), 
+			date_format(`b`.`board_date`,'%m-%d')) AS board_date 
+		FROM board b JOIN member m ON b.mno=m.mno 
+		WHERE board_no=#{no}
 	</select>
 	
 	

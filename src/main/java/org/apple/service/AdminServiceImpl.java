@@ -43,4 +43,19 @@ public class AdminServiceImpl extends AbstractService implements AdminService {
 		return adminDAO.findDel(no);
 	}
 
+	@Override
+	public int totalNoticeCount(SearchDTO searchDTO) {
+		return 0;
+	}
+
+	@Override
+	public int totalCommentsCount(SearchDTO searchDTO) {
+		return 0;
+	}
+
+	@Override
+	public BoardDTO adminDetail(int no) {
+		return adminDAO.adminDetail(no);
+	}
+
 }

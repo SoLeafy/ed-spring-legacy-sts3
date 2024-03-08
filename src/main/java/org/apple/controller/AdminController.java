@@ -1,5 +1,6 @@
 package org.apple.controller;
 
+import java.io.Reader;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -114,6 +115,7 @@ public class AdminController {
 	@GetMapping("/members")
 	public String members(@RequestParam(value="page", defaultValue="1") String page, 
 			@RequestParam(value="perPage", defaultValue="1") String perPage, 
+			@RequestParam(value="searchOption", required=false) String searchOption, 
 			@RequestParam(value="search", required=false) String search, 
 			Model model) {
 		
@@ -139,12 +141,46 @@ public class AdminController {
 	}
 	
 	@GetMapping("/notice")
-	public String notice() {
+	public String notice(@RequestParam(value="page", defaultValue="1") String page, 
+			@RequestParam(value="perPage", required=false) String perPage, 
+			@RequestParam(value="searchOption", required=false) String searchOption, 
+			@RequestParam(value="search", required=false) String search, 
+			Model model) {
+		
+		SearchDTO searchDTO = new SearchDTO();
+		searchDTO.setSearch(search);
+		searchDTO.setSearchOption(searchOption);
+		
+		int totalNoticeCount = adminService.totalNoticeCount(searchDTO);
+		
+		PaginationInfo paginationInfo = new PaginationInfo();
+		paginationInfo.setCurrentPageNo(util.str2Int(page));
+		paginationInfo.setRecordCountPerPage(util.str2Int(perPage));
+		paginationInfo.setPageSize(10);
+		paginationInfo.setTotalRecordCount(totalNoticeCount);
+		
 		return "admin/notice";
 	}
 	
 	@GetMapping("/comments")
-	public String comments() {
+	public String comments(@RequestParam(value="page", defaultValue="1") String page, 
+			@RequestParam(value="perPage", required=false) String perPage, 
+			@RequestParam(value="searchOption", required=false) String searchOption, 
+			@RequestParam(value="search", required=false) String search, 
+			Model model) {
+		
+		SearchDTO searchDTO = new SearchDTO();
+		searchDTO.setSearch(search);
+		searchDTO.setSearchOption(searchOption);
+		
+		int totalCommentsCount = adminService.totalCommentsCount(searchDTO);
+		
+		PaginationInfo paginationInfo = new PaginationInfo();
+		paginationInfo.setCurrentPageNo(util.str2Int(page));
+		paginationInfo.setRecordCountPerPage(util.str2Int(perPage));
+		paginationInfo.setPageSize(10);
+		paginationInfo.setTotalRecordCount(totalCommentsCount);
+		
 		return "admin/comments";
 	}
 	
@@ -157,4 +193,36 @@ public class AdminController {
 	public String join() {
 		return "admin/join";
 	}
+	
+	//20240305
+	@GetMapping("/detail")
+	public String detail(@RequestParam(value="no", defaultValue="0") String no, Model model) {
+		//db에서 받아오기
+		if(util.str2Int(no) == 0) {
+			return "redirect:/admin/board";
+		}
+		BoardDTO dto = adminService.adminDetail(util.str2Int(no)); 
+		//모델에 붙여주기
+		model.addAttribute("detail", dto);
+		return "admin/detail";
+	}
 }
+
+/*
+ * 20240305 psd
+ * 				세션			쿠키
+ * 사용 예)		로그인			쇼핑 정보, 장바구니, 자동 로그인
+ * 저장위치		서버			브라우저
+ * 속도			느림			빠름
+ * 보안			높음			낮음(위변조가능)
+ * 
+ * 세션과 쿠키의 차이점
+ * 
+ * 쿠키/세션은 캐시와 다름.
+ * 
+ * 쿠키는 이름, 값, 유효시간, 도메인, 경로 등을 저장.
+ * 클라이언트에 총300개의 쿠기 저장 가능
+ * 쿠키는 도메인당 20개만 가질 수 있다.
+ * 쿠키 크기는 4096(4KB)까지만 저장 가능.
+ * 
+ */

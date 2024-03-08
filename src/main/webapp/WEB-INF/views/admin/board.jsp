@@ -26,7 +26,17 @@
 	<!-- 제이쿼리 -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	
+	<style type="text/css">
+	.detailBtn:hover{
+		cursor:pointer;
+	}
+	</style>
+	
 	<script type="text/javascript">
+		function detail(no) {
+			//window.open('주소', 'title', '크기 설정'); //windows 아님
+			window.open('./detail?no='+no, '톺아보기', 'width=800px, height=800px, scrollbars=yes');
+		}		
 	
 		function postDel(no, del) {
 			location.href="./postDel?no="+no+"&del="+del;
@@ -36,7 +46,7 @@
 			location.href="./board?page="+page+"&perPage=${perPage}&searchOption=${searchOption}&search=${search}";
 		}
 		$(function(){
-			$("#perPage").change(function(){//select 드롭다운을 변경했을 시 (ajax 쓰는게 좋을거같다..)
+			$("#perPage").change(function(){//select 드롭다운을 변경했을 시 (ajax 쓰는게 좋을거같다.. 근데 어떻게? ㅁㄹ)
 				location.href="./board?page=1&perPage="+$("#perPage").val()+"&searchOption=${searchOption}&search=${search}";
 			})
 			$("#searchBtn").click(function(){
@@ -117,6 +127,7 @@
                             	<option value="1" <c:if test="${searchOption eq 1 }">selected="selected"</c:if>>제목 검색</option>
                             	<option value="2" <c:if test="${searchOption eq 2 }">selected="selected"</c:if>>본문 검색</option>
                             	<option value="3" <c:if test="${searchOption eq 3 }">selected="selected"</c:if>>작성자 검색</option>
+                            	<option value="4" <c:if test="${searchOption eq 4 }">selected="selected"</c:if>>ip 검색</option>
                             </select>
 	                            <input type="text" name="search" id="search" class="form-control" value="${search }">
 	                            <button type="button" class="btn btn-info" id="searchBtn">search</button>
@@ -133,43 +144,49 @@
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
-                                        <tr>
-                                            <th>글번호</th>
-                                            <th>제목</th>
-                                            <th>글쓴이</th>
-                                            <th>댓글</th>
-                                            <th>날짜</th>
-                                            <th>조회수</th>
-                                            <th>삭제 여부</th>
+                                        <tr class="row">
+                                            <th class="col-1">글번호</th>
+                                            <th class="col-3">제목</th>
+                                            <th class="col-1">글쓴이</th>
+                                            <th class="col-1">댓글</th>
+                                            <th class="col-2">날짜</th>
+                                            <th class="col-2">ip</th>
+                                            <th class="col-1">조회수</th>
+                                            <th class="col-1">삭제 여부</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
-                                        <tr>
-                                            <th>글번호</th>
-                                            <th>제목</th>
-                                            <th>글쓴이</th>
-                                            <th>댓글</th>
-                                            <th>날짜</th>
-                                            <th>조회수</th>
-                                            <th>삭제 여부</th>
+                                        <tr class="row">
+                                            <th class="col-1">글번호</th>
+                                            <th class="col-3">제목</th>
+                                            <th class="col-1">글쓴이</th>
+                                            <th class="col-1">댓글</th>
+                                            <th class="col-2">날짜</th>
+                                            <th class="col-2">ip</th>
+                                            <th class="col-1">조회수</th>
+                                            <th class="col-1">삭제 여부</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
                                     <c:forEach items="${list }" var="row">
-                                        <tr <c:if test="${row.board_del eq 0 }">class="bg-dark"</c:if>>
-                                            <td>${row.board_no }</td>
-                                            <td>
-                                            <a href="/detail?no=${row.board_no }">${row.board_title }</a>
+                                        <tr class="row <c:if test="${row.board_del eq 0 }">bg-dark</c:if>">
+                                            <td class="col-1 text-center">${row.board_no }</td>
+                                            <td class="col-3 detailBtn" onclick="detail(${row.board_no })">
+                                            ${row.board_title }
                                             </td>
-                                            <td>
+                                            <td class="col-1">
                                             <a href="./board?searchOption=3&search=${row.mname }">
                                             ${row.mname }
                                             </a>
                                             </td>
-                                            <td>${row.comment }</td>
-                                            <td>${row.board_date }</td>
-                                            <td>${row.board_count }</td>
-                                            <td>
+                                            <td class="col-1">${row.comment }</td>
+                                            <td class="col-2">${row.board_date }</td>
+                                            <td class="col-2">
+                                            <a href="./board?searchOption=4&search=${row.board_ip }">
+                                            ${row.board_ip }</a>
+                                            </td>
+                                            <td class="col-1">${row.board_count }</td>
+                                            <td class="col-1">
                                             <c:choose>
                                             	<c:when test="${row.board_del eq 1 }">
 		                                            <%-- <i class="fa fa-genderless" aria-hidden="true" onclick="postDel(${row.board_no}, ${row.board_del })"></i> --%>

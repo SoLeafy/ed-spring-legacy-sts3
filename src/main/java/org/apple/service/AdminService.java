@@ -18,4 +18,10 @@ public interface AdminService {
 	public int postDel(BoardDTO dto);
 
 	public int findDel(int no);
+
+	public int totalNoticeCount(SearchDTO searchDTO);
+
+	public int totalCommentsCount(SearchDTO searchDTO);
+
+	public BoardDTO adminDetail(int no);
 }
